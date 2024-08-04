@@ -14,7 +14,7 @@ pub fn setup_logging(default_level: &str) -> Result<()> {
     .with_ansi(isatty);
   if isatty {
     fmt
-      .with_timer(tracing_subscriber::fmt::time::LocalTime::rfc_3339())
+      .with_timer(tracing_subscriber::fmt::time::ChronoLocal::rfc_3339())
       .init();
   } else {
     fmt.without_time().init();
