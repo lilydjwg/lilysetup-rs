@@ -14,7 +14,8 @@ pub fn setup_logging(default_level: &str) -> Result<()> {
     .with_ansi(isatty);
   if isatty {
     fmt
-      .with_timer(tracing_subscriber::fmt::time::ChronoLocal::rfc_3339())
+      .with_timer(tracing_subscriber::fmt::time::ChronoLocal::new(
+          String::from("%Y-%m-%d %H:%M:%S%.6f %z")))
       .init();
   } else {
     fmt.without_time().init();
