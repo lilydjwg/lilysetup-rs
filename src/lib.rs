@@ -32,11 +32,9 @@ fn is_connected_to_journald() -> bool {
 // https://github.com/systemd/systemd/blob/main/docs/JOURNAL_NATIVE_PROTOCOL.md
 fn is_connected_to_journald_impl() -> Option<()> {
   let s = std::env::var("JOURNAL_STREAM").ok()?;
-  let (dev, inode) = s.split_once(':')?;
-  let dev = dev.parse().ok()?;
-  let inode = inode.parse().ok()?;
-  let stat = stat_stderr()?;
-  if stat.st_dev == dev && stat.st_ino == inode {
+  let (dev, inode) = s.split_once(':').map(|(a, b)| (a.parse(), b.parse()))?;
+  let libc::stat { st_dev, st_ino, .. } = stat_stderr()?;
+  if dev == Ok(st_dev) && inode == Ok(st_ino) {
     Some(())
   } else {
     None
